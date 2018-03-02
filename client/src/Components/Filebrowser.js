@@ -5,6 +5,7 @@ class Filebrowser extends Component {
 
     constructor(props) {
         super(props);
+        //console.log(this.props);
         this.state = {
             countOfOpen: 0,
             dataFromFile: []
@@ -18,19 +19,26 @@ class Filebrowser extends Component {
         var file = e.target.files[0];
         var reader = new FileReader();
         var self = this;
+       // console.log(this.props);
 
         reader.onload = function (e) {
-
+           // console.log(self.state);
             var jsonSTR = e.target.result.trim();
             var dataFromFile = [];
             try {
                 dataFromFile = JSON.parse(jsonSTR);
             }
             catch (err) { }
-            self.setState({
+            /*self.setState({
                 countOfOpen: ++self.state.countOfOpen,
                 dataFromFile: dataFromFile
-            });
+            });*/
+            let returned = self.props.readFile({ countOfOpen: self.state.countOfOpen,
+                                     dataFromFile: dataFromFile})
+            console.log(self.props);
+            //self.setState(self.props.readFile({ countOfOpen: self.state.countOfOpen,
+            //                     dataFromFile: dataFromFile}));
+            //console.log(self.state);
 
         };
         reader.readAsText(file);
@@ -48,7 +56,7 @@ class Filebrowser extends Component {
     }
 
     render() {
-        console.log();
+        //console.log(this.state);
         return (
             <div className="app">
                 <input type="file" onChange={this.readFile} className='browseButt'></input>
