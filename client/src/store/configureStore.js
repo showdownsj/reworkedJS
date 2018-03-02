@@ -1,5 +1,5 @@
 import { createStore, applyMiddleware } from 'redux'
-import openReadFile from '../reducers/openReadFile.js'
+import openReadFile from '../reducers/openReadReducer'
 import { createLogger } from 'redux-logger'
 import thunkMiddleware from 'redux-thunk'
 
@@ -12,7 +12,7 @@ export function configureStore(initialState) {
     applyMiddleware(
       thunkMiddleware,
       loggerMiddleware
-      )
     )
-    return store;
+  )
+  return store;
 }

@@ -7,7 +7,7 @@ export default class GeneratorID {
     //get new id key for item
     generateID = () => {
         let hasIdInDB = []
-        fetch('/users', {
+        fetch('/table', {
             "method": "GET"
         })
             .then((response) => response.json())

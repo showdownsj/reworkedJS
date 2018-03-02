@@ -248,6 +248,7 @@ input[type="text"]:disabled, select:disabled{
   margin-left: 40%;
   margin-right: 40%;
   padding: 20px;
+  padding-top: 0;
   text-align: center;
   color: #f00e0e;
   font: bold 14pt sans-serif;  

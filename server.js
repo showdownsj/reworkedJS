@@ -17,9 +17,9 @@ app.use(bodyParser.json())
 
 var connection = mysql.createConnection({
   host: 'localhost',
-  user: 'sqluser123',
+  user: 'sqlUser',
   password: 'sqluser123',
-  database: 'filecopy',
+  database: 'FilesCopy',
 });
 //connection.connect();
 
@@ -43,14 +43,12 @@ function createTable() {
 }
 createTable();
 
-
-
-app.set('port', (process.env.PORT || 3001));
-
 app.use('/', express.static(__dirname));
 
 
-app.listen(port, () => console.log(`Listening on port ${port}`));
+app.listen(port, function() {
+   console.log('Listening on port: '+{port})
+});
 
 app.get('/users', function(req, res){
   try{
@@ -62,20 +60,16 @@ app.get('/users', function(req, res){
 });
 
 // Listen to POST requests to /users.
-app.post('/users', function (req, res) {
-  //if the table has deleted;
+app.post('/table', function (req, res) {
+  
   createTable();
-  // sent data. Get
+  
   var data = req.body;
   var dataUpd = req.body;
   for (var index = 0; index < data.length; index++) {
-
-
-    // Do a MySQL query.
+  
     try {
       var query = connection.query('INSERT INTO persons SET ?', data[index], function (err, result) {
-
-        // Neat!
       });
     }
     catch (err) { }
@@ -86,8 +80,6 @@ app.post('/users', function (req, res) {
   for (var index = 0; index < dataUpd.length; index++) {
     try {
       var query = connection.query('UPDATE persons SET ? WHERE id=?', [dataUpd[index], data[index].id], function (err, result) {
-
-        // Neat!
       });
     }
     catch (err) { }

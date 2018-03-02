@@ -1,4 +1,4 @@
-import *as types from '../constants/ActionFile.js';
+import *as types from '../constants/FileActions.js';
 
 export function readFile (data){
     return{
