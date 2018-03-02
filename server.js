@@ -2,7 +2,7 @@ var mysql = require('mysql');
 var express = require('express');
 var bodyParser = require('body-parser');
 
-var app = express();
+const app = express();
 
 const port = process.env.PORT || 5000;
 
@@ -17,9 +17,9 @@ app.use(bodyParser.json())
 
 var connection = mysql.createConnection({
   host: 'localhost',
-  user: 'sqlUser',
+  user: 'sqluser123',
   password: 'sqluser123',
-  database: 'FilesCopy',
+  database: 'filecopy',
 });
 //connection.connect();
 
@@ -45,7 +45,7 @@ createTable();
 
 
 
-app.set('port', (process.env.PORT || 3000));
+app.set('port', (process.env.PORT || 3001));
 
 app.use('/', express.static(__dirname));
 

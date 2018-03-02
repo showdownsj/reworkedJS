@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-//var TableDesign = require('./TableDesign');
 import Tabledesign from './Tabledesign';
 
 class Filebrowser extends Component {
@@ -19,13 +18,15 @@ class Filebrowser extends Component {
         var file = e.target.files[0];
         var reader = new FileReader();
         var self = this;
-        console.log(this.state);
 
         reader.onload = function (e) {
 
             var jsonSTR = e.target.result.trim();
-            var dataFromFile = JSON.parse(jsonSTR);
-
+            var dataFromFile = [];
+            try {
+                dataFromFile = JSON.parse(jsonSTR);
+            }
+            catch (err) { }
             self.setState({
                 countOfOpen: ++self.state.countOfOpen,
                 dataFromFile: dataFromFile
@@ -35,13 +36,23 @@ class Filebrowser extends Component {
         reader.readAsText(file);
     }
 
+    checkOpenFile = () => {
+
+        if (this.state.dataFromFile.length > 0)
+            return (<div>
+                <Tabledesign data={this.state.dataFromFile} flag={this.state.countOfOpen} />
+            </div>);
+        else if (this.state.countOfOpen > 0)
+            return (<div className='openError'><br />An attempt to open incorrect file</div>);
+        return (<Tabledesign data={this.state.dataFromFile} flag={this.state.countOfOpen} />);
+    }
 
     render() {
         console.log();
         return (
             <div className="app">
                 <input type="file" onChange={this.readFile} className='browseButt'></input>
-                <Tabledesign data={this.state.dataFromFile} flag={this.state.countOfOpen} />
+                {this.checkOpenFile()}
             </div>
 
         );
