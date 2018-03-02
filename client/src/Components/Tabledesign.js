@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import SortTable from '../utils/SortTable.js';
+import GeneratorID from '../utils/GeneratorID';
 
 // Component to work with table-data:
 //addNewLine() - adding empty line to table (enable edit);
@@ -9,9 +11,10 @@ import React, { Component } from 'react';
 class Tabledesign extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
-            disabled: [],
-            dataTable: null,
+            disabled: this.createStates(this.props.data, []),
+            dataTable: this.props.data,
             sortState: [],
             startFlag: 0,
             result: [0, '', ''],
@@ -48,7 +51,7 @@ class Tabledesign extends Component {
 
                     dataTable[i]['' + prop] = null;
                 }
-                console.log(dataTable[index]);
+
             }
 
         this.setState({
@@ -62,10 +65,12 @@ class Tabledesign extends Component {
         e.preventDefault();
         //console.log(this.props.data);
         var dataTable = this.state.dataTable || [];
-        var disabled = createStates(dataTable, this.state.disabled);
+        var disabled = this.createStates(dataTable, this.state.disabled);
+        var newID = new GeneratorID(dataTable);
+        newID.generateID();
 
         dataTable.push({
-            id: generateID(dataTable),
+            id: newID.getGeneratedID(),
             name: null,
             age: 1,
             gender: 'male',
@@ -75,12 +80,12 @@ class Tabledesign extends Component {
             address: null
         });
         disabled[dataTable.length - 1] = true;
-        //console.log(states);
+
         this.setState({
             disabled: disabled,
             dataTable: dataTable
         });
-        //console.log(dataTable);
+
     }
 
     onClickEditHandler = (e) => {
@@ -95,21 +100,21 @@ class Tabledesign extends Component {
                 disabled[index] = disabled[index] ? false : true;
 
         this.setState({ disabled: disabled });
-        console.log(disabled);
+
     }
 
     onClickDeleteHandler = (e) => {
         e.preventDefault();
         var targetKey = e.target.parentNode.parentNode.accessKey;
         var dataTable = this.state.dataTable;
-        var disabled = createStates(dataTable, this.state.disabled);
+        var disabled = this.createStates(dataTable, this.state.disabled);
 
         for (var index in dataTable)
             if (dataTable[index].id === targetKey) {
                 dataTable.splice(index, 1);
                 disabled.splice(index, 1);
             }
-        //console.log(dataTable);
+
         this.setState({
             disabled: disabled,
             dataTable: dataTable
@@ -148,12 +153,19 @@ class Tabledesign extends Component {
             if (index !== targetIndex)
                 sortState[index] = 0;
 
-        var sorted = sortDataInc(className, this.state.dataTable,
-            this.state.disabled, sortState[targetIndex]);
+        var sortedData = new SortTable({
+            className: className,
+            data: this.state.dataTable,
+            disabledStates: this.state.disabled,
+            sortState: sortState[targetIndex]
+        })
+            .getSortedData();
+
+
 
         this.setState({
-            dataTable: sorted.TD,
-            disabled: sorted.ST,
+            dataTable: sortedData.TD,
+            disabled: sortedData.ST,
             sortState: sortState
         })
 
@@ -171,7 +183,7 @@ class Tabledesign extends Component {
         }).then(function (response) {
             return response.json()
         }).then(function (body) {
-            console.log(body);
+            //console.log(body);
         });
 
         self.setState({
@@ -230,13 +242,23 @@ class Tabledesign extends Component {
         )
     }
 
+    // set disabled/enabled state for input-item
+    createStates = (data, states) => {
+        if (states.length === 0) {
+            states = new Array(data.length);
+            for (var i in data)
+                states[i] = false;
+        }
+        return states;
+    }
+
+
     render() {
+
         //console.log(this.props.data);
-        var dataTable = this.state.dataTable || this.props.data;
+        var dataTable = this.state.dataTable;
         var isSubmit = false;
         var result = this.state.result;
-
-        //console.log(this.state.result);
 
         if (this.state.result[0] !== 0)
             this.state.result = [0, ''];
@@ -244,40 +266,18 @@ class Tabledesign extends Component {
         var errors = this.state.errors;
         var warnings = this.state.warnings;
 
+        var dataTemplate;
 
-        // this.state.errors = this.state.warnings =[];
-
-        //console.log(this.props.flag);
-        //.. there's some crutch to change an initial state
-        if (this.state.dataTable === null && this.props.data.length > 0) {
-            //console.log(this.props.data);
-            this.state.dataTable = this.props.data;
-
-            dataTable = this.state.dataTable;
-            this.state.disabled = createStates(dataTable, []);
-            this.state.startFlag = this.props.flag;
-
-        }
-        else if (this.state.dataTable !== null && this.props.flag > this.state.startFlag) {
-            this.state.dataTable = this.props.data;
-            dataTable = this.state.dataTable;
-            //console.log(this.props.flag+" "+this.state.startFlag);
-            this.state.startFlag = this.props.flag;
-            this.state.disabled = createStates(dataTable, []);
-
-        }
-
-        if (dataTable.length > 0)
+        if (dataTable.length > 0) {
             isSubmit = true;
+            dataTemplate = this.drawTableFields(dataTable, this);
+            this.state.startFlag = this.props.flag;
 
+        }
 
-        if (dataTable.length > 0)
-            var dataTemp = this.drawTableFields(dataTable, this);
+        if (dataTable.length > 0 && this.props.flag > this.state.startFlag)
+            this.state.startFlag = this.props.flag;
 
-
-
-        //to init states, cause there were [] before
-        this.state.disabled = createStates(dataTable, this.state.disabled);
         return (
             <div className="tableList">
                 <form onSubmit={this.onSubmitHandler}>
@@ -298,21 +298,17 @@ class Tabledesign extends Component {
                         </thead>
 
                         <tbody className="notEditable">
-                            {dataTemp}
+                            {dataTemplate}
                             <tr>
                                 <td className='noBorder' colSpan='8'><input type='submit' id='submitButt' disabled={!isSubmit} value='Submit' /></td>
-
                                 <td className='noBorder'><button className='addButt' onClick={this.onAddHandler}>Add</button></td>
                             </tr>
-
                         </tbody>
                     </table>
                     <div className='result' hidden={!result[0]}>{dataTable.length - errors.length + '\\' + dataTable.length + ' ' + result[2]}
                         <br />
-
                         <span className="warning"><i className='arrowRight' /> warnings: {warnings.length}</span>
                         <br />
-
                         <span className="error"><i className='arrowRight' /> errors: {errors.length} (name field mustn't be empty)</span>
                     </div>
                 </form>
@@ -320,108 +316,6 @@ class Tabledesign extends Component {
         );
     }
 };
-
-//get new id key for item
-function generateID(data) {
-
-    var hasInDB = []
-    fetch('/users', {
-        "method": "GET"
-    })
-        .then((response) => response.json())
-        .then((responseData) => hasInDB = responseData)
-
-
-    var ID = Math.random().toString(16).substr(2) + Math.random().toString(16).substr(2, 3);
-
-    ID = '5a6b0087' + ID;
-    for (var index in data)
-        if (data[index].id === ID || hasInDB.indexOf(ID) > -1)
-            ID = generateID(data);
-    return ID;
-}
-
-// set disabled/enabled state for input-item
-function createStates(data, states) {
-    if (states.length === 0) {
-        states = new Array(data.length);
-        for (var i in data)
-            states[i] = false;
-    }
-    return states;
-}
-
-
-function sortMethod(field, data, states) {
-    if (field !== '') {
-        for (var i = 0; i < data.length; i++) {
-
-            for (var j = i; j < data.length; j++) {
-
-                if (isNaN(data[i]['' + field]) || isNaN(data[j]['' + field])) {
-                    if (data[i]['' + field].toLowerCase() < data[j]['' + field].toLowerCase()) {
-                        var buf = data[i];
-                        data[i] = data[j];
-                        data[j] = buf;
-
-                        buf = states[i];
-                        states[i] = states[j];
-                        states[j] = buf;
-
-                    }
-                }
-                else {
-                    if (data[i]['' + field] < data[j]['' + field]) {
-                        var buf = data[i];
-                        data[i] = data[j];
-                        data[j] = buf;
-
-                        buf = states[i];
-                        states[i] = states[j];
-                        states[j] = buf;
-                    }
-                }
-            }
-        }
-
-        return { data: data, states: states };
-
-    }
-}
-
-//sort data in table (first click - by asc, after  - desc and repeat it)
-function sortDataInc(field, data, states, ascDescState) {
-
-    var emptyData = [];
-    var emptyStates = [];
-
-    for (var i = 0; i < data.length; i++)
-        if (data[i]['' + field] === '' || data[i]['' + field] === null) {
-
-            emptyData.push(data[i]);
-            data.splice(i, 1);
-            emptyStates.push(states[i]);
-            states.splice(i, 1);
-            i--;
-        }
-
-    var sortedData = sortMethod(field, data, states);
-
-    var resultData;
-    var resultStates;
-
-    if (ascDescState === 1) {
-        resultData = sortedData.data.concat(emptyData);
-        resultStates = sortedData.states.concat(emptyStates);
-    }
-    else if (ascDescState === 2) {
-        resultData = sortedData.data.reverse().concat(emptyData);
-        resultStates = sortedData.states.reverse().concat(emptyStates)
-    }
-
-    return { TD: resultData, ST: resultStates };
-}
-
 
 export default Tabledesign;
 

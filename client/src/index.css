@@ -242,3 +242,17 @@ input[type="text"]:disabled, select:disabled{
    color:#D50000;
 }
 
+.openError{
+  border: 1px solid gray;
+  margin: 15px;
+  margin-left: 40%;
+  margin-right: 40%;
+  padding: 20px;
+  text-align: center;
+  color: #f00e0e;
+  font: bold 14pt sans-serif;  
+  border-radius: 15px;
+  width : 20%;
+  background: rgb(214, 216, 214);
+  
+}
