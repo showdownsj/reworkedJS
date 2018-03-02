@@ -50,7 +50,7 @@ app.listen(port, function() {
    console.log('Listening on port: '+{port})
 });
 
-app.get('/users', function(req, res){
+app.get('/table', function(req, res){
   try{
     connection.query('SELECT id FROM persons', function(err, result){
         res.send(result);

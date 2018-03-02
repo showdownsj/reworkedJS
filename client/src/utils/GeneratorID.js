@@ -1,3 +1,7 @@
+//Here's a generator for the field of data as 'id' 
+//genereateID() - get all id from database, id from current table and generate unique id;
+//getGeneratedID() - get this id;  
+
 export default class GeneratorID {
     constructor(data) {
         this.data = data;

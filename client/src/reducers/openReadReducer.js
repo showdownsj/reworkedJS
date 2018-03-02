@@ -1,5 +1,10 @@
 import * as types from '../constants/FileActions'
 
+//openReadReducer(state, action) - return the app's state changes in response to some type of action;
+//                                 has 2 arguments:
+//                                 state - include prevent state or is initialState by default; 
+//                                 action - show that something happened (which kind of action) 
+
 const initialState = {
     countOfOpen: 0,
     dataFromFile: []

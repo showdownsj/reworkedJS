@@ -1,5 +1,10 @@
-
-
+//certain class to sort table of Tabledesign component:
+//  1) getSortedData() - define the data of table to sort from 'props'  and start a sort method, 
+//                       then return sorted data in ascending or descending order (it depends 
+//                       on 'props.sortState'); 
+//  2) sortMethid(data,states) - method wich represent the sort of data and return sorted object  
+//                               in ascending order;
+    
 class SortTable {
     constructor(props) {
         this.props = props;

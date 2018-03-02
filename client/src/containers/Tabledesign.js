@@ -63,12 +63,12 @@ class Tabledesign extends Component {
 
     onAddHandler = (e) => {
         e.preventDefault();
-        //console.log(this.props.data);
+       
         var dataTable = this.state.dataTable || [];
         var disabled = this.createStates(dataTable, this.state.disabled);
         var newID = new GeneratorID(dataTable);
         newID.generateID();
-
+        
         dataTable.push({
             id: newID.getGeneratedID(),
             name: null,
