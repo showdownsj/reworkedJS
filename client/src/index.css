@@ -119,13 +119,13 @@ select{
 select:disabled{
   background: none;
 }
-.editButtAc{
+.editButtOff{
   background:rgb(27, 116, 27);
   color: white;
   border-radius: 5px;
   width: 50%;
 }
-.editButtIn{
+.editButtOn{
   background:#0320BA;
   color: white;
   border-radius: 5px;

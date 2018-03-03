@@ -84,5 +84,5 @@ app.post('/table', function (req, res) {
     }
     catch (err) { }
   }
-
+res.send();
 });

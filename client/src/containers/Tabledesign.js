@@ -2,11 +2,34 @@ import React, { Component } from 'react';
 import SortTable from '../utils/SortTable.js';
 import GeneratorID from '../utils/GeneratorID';
 
-// Component to work with table-data:
-//addNewLine() - adding empty line to table (enable edit);
-//onChangeHandler() - handling changes in input-field;
-//onClickEdit() - enable/disable the possible of edit;
-//onClickDelete() - deleting current line from table;
+//There's a component wich represents the rendering  of data in the table, get parsing data from file
+//and the count of file open by 'props' from 'Filebowser';
+//
+//the're some methods and handlers to work with table:
+//
+//  1) onChangeHandler(e) - catches a change event in input-field, after changes state 
+//                         of this component with new entered data;
+//
+//  2) onAddHandler(e) - catches the event of click on the button 'Add', then adds new
+//                       empty line to the tail of table;
+//
+//  3) onClickEditHandler(e) -  catches the event of click on the button 'Edit', then it does
+//                              available or disable the line of this button to edit the data; 
+//                              
+//  4) onClickDeleteHandler(e) - catches the event of click on the button 'Delete', then it deletes
+//                               the line of this button with data; 
+//
+//  5) onClickHeaderHandler(e) - catches the event of click on the header, then starts sort method;
+//                               
+//  6) onSubmitHandler(e) - catches the event of click on the button 'Submit', then pushes a data from 
+//                          the table into a database;    
+//                          
+//  7) validator(data) - checks data in the table on the possibility of pushing into a database;
+//
+//  8) drawTableFields(data,state) - returns the rendering of data table fields (depends on data and state);
+//
+//  9) createStates(states) - initialise the disabled/available states of data edit;
+
 
 class Tabledesign extends Component {
     constructor(props) {
@@ -153,6 +176,7 @@ class Tabledesign extends Component {
             if (index !== targetIndex)
                 sortState[index] = 0;
 
+        // creating object wich can sort a data, and then get the sorted data back
         var sortedData = new SortTable({
             className: className,
             data: this.state.dataTable,
@@ -233,7 +257,7 @@ class Tabledesign extends Component {
                     <td><input type='text' value={item.company} className="company" disabled={!self.state.disabled[index]} /></td>
                     <td><input type='text' value={item.phone} className="phone" disabled={!self.state.disabled[index]} /></td>
                     <td><input type='text' value={item.address} className="address" disabled={!self.state.disabled[index]} /></td>
-                    <td className='action'><button className={!self.state.disabled[index] ? 'editButtIn' : 'editButtAc'} onClick={self.onClickEditHandler}>Edit</button>
+                    <td className='action'><button className={!self.state.disabled[index] ? 'editButtOn' : 'editButtOff'} onClick={self.onClickEditHandler}>Edit</button>
                         <button className='deleteButt' onClick={self.onClickDeleteHandler}>Delete</button>
                     </td>
                 </tr>
@@ -242,7 +266,6 @@ class Tabledesign extends Component {
         )
     }
 
-    // set disabled/enabled state for input-item
     createStates = (data, states) => {
         if (states.length === 0) {
             states = new Array(data.length);
@@ -255,11 +278,11 @@ class Tabledesign extends Component {
 
     render() {
 
-        //console.log(this.props.data);
         var dataTable = this.state.dataTable;
         var isSubmit = false;
         var result = this.state.result;
 
+        //result of submit action
         if (this.state.result[0] !== 0)
             this.state.result = [0, ''];
 
@@ -274,7 +297,7 @@ class Tabledesign extends Component {
             this.state.startFlag = this.props.flag;
 
         }
-
+        
         if (dataTable.length > 0 && this.props.flag > this.state.startFlag)
             this.state.startFlag = this.props.flag;
 

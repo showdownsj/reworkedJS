@@ -6,6 +6,12 @@ import { connect } from 'react-redux'
 import TableDesign from './Tabledesign.js';
 import Filebrowser from '../Components/Filebrowser.js'
 
+//There's container wich implements the actions and generating next states:
+//  1) readFile(file) - opens the file, then tries to parse that file and calls
+//                      the action of reading file (arguments depend on the result of parsing)
+//                      which generate the next state of 'props';
+//  2) checkOpenFile() - returns the rendering of table depends on the result of file reading
+
 export class OpenReadContainer extends Component {
     constructor(props) {
         super(props);

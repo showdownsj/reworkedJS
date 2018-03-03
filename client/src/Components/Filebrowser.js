@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
-//There's a component 
-
+//There's a component that defines the layout and events getting from OpenReadContainer' props 
+//  1) readFile(e) - calls the action from props to file rading;
 
 class Filebrowser extends Component {
 
