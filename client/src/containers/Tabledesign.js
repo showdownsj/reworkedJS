@@ -26,7 +26,8 @@ import GeneratorID from '../utils/GeneratorID';
 //                          
 //  7) validator(data) - checks data in the table on the possibility of pushing into a database;
 //
-//  8) drawTableFields(data,state) - returns the rendering of data table fields (depends on data and state);
+//  8) drawTableFields(data,state) - returns a template for the rendering of data table fields 
+//                                   (depends on data and state);
 //
 //  9) createStates(states) - initialise the disabled/available states of data edit;
 
@@ -86,12 +87,12 @@ class Tabledesign extends Component {
 
     onAddHandler = (e) => {
         e.preventDefault();
-       
+
         var dataTable = this.state.dataTable || [];
         var disabled = this.createStates(dataTable, this.state.disabled);
         var newID = new GeneratorID(dataTable);
         newID.generateID();
-        
+
         dataTable.push({
             id: newID.getGeneratedID(),
             name: null,
@@ -297,7 +298,7 @@ class Tabledesign extends Component {
             this.state.startFlag = this.props.flag;
 
         }
-        
+
         if (dataTable.length > 0 && this.props.flag > this.state.startFlag)
             this.state.startFlag = this.props.flag;
 
